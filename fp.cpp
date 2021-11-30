@@ -373,7 +373,7 @@ void keluarfile(){
 	}
 }
 
-void masukfilestack(){
+void writestack(){
 	ofstream myfile;
 	typeinfo data;
 	string ubah;
@@ -398,7 +398,7 @@ void masukfilestack(){
 	myfile.close();
 }
 
-void keluarfilestack(){
+void readstack(){
 	typeinfo data;
 	ifstream myfile("antrianSukses.txt");
 
