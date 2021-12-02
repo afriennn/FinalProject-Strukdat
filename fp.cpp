@@ -3,6 +3,10 @@
 #include <conio.h>
 #include <string.h>
 #include <fstream>
+#define max 50
+#define True 1
+#define False 0
+
 using namespace std;
 
 struct typeinfo{
@@ -18,9 +22,7 @@ struct node{
 typeptr akhirstack, awalstack;
 typeptr qdepan, qbelakang;
 
-int antrian = 0;
-int riwayat = 0;
-
+void menu();
 void tambahantrian();
 void lihatantrian();
 void layaniantrian();
@@ -32,11 +34,11 @@ void enqueue(typeinfo IB);
 void dequeue();
 void cetakqueue();
 
-void buat_stack();
-int stack_kosong();
+void buatstack();
+int stackkosong();
 void push(typeinfo IB);
 void pop();
-void cetak_stack();
+void cetakstack();
 
 void masukfile();
 void keluarfile();
@@ -45,324 +47,271 @@ void readstack();
 string stringreplace(string x);
 string stringreverse(string x);
 
-int main()
-{
-	 int pilih, angka;
+int pilih, angka;
+char ulang='y';
 
-	Mulai:
+int main(){
+	buatstack();
+	buatqueue();
+	do{
+		menu();
+		switch(pilih){
+		 	case 1:
+		 		tambahantrian();
+		 	break;
+		 	case 2:
+		 		lihatantrian();
+		 	break;
+		 	case 3:
+		 		layaniantrian();
+		 	break;
+		 	case 4:
+		 		lihatriwayat();
+		 	break;
+		 	case 0:
+	            return 0;
+	        break;
+		 	default:
+		 		cout << "Salah input!\n";
+		 	break;
+		}
+		cout << "\nKembali ke menu utama? (y/n) : "; cin >> ulang;
+	} while(ulang=='y' || ulang=='Y');
+	cout << endl;
+	system("pause");
+}
+
+void menu(){
+	system("cls");
 	cout << "==============================\n";
 	cout << "|       Antrian Apotek       |\n";
 	cout << "==============================\n";
-	cout << "1. Tambah Antrian" << endl;
-	cout << "2. Lihat Antrian" << endl;
-	cout << "3. Layani Antrian" << endl;
-	cout << "4. Lihat Riwayat Antrian" << endl;
-	cout << "0. Exit" << endl;
+	cout << "1. Tambah Antrian\n";
+	cout << "2. Lihat Antrian\n";
+	cout << "3. Layani Antrian\n";
+	cout << "4. Lihat Riwayat Antrian\n";
+	cout << "0. Exit\n";
 	cout << "Pilih: "; cin >> pilih;
-	cout << endl;
-
-	 switch(pilih)
-	 {
-	 	case 1:
-	 		tambahantrian();
-	 	break;
-
-	 	case 2:
-	 		lihatantrian();
-	 	break;
-
-	 	case 3:
-	 		layaniantrian();
-	 	break;
-
-	 	case 4:
-	 		lihatriwayat();
-	 	break;
-
-	 	case 0:
-            return 0;
-        break;
-
-	 	default:
-	 		cout << "Salah input." << endl;
-	 	break;
-	}
-	cout << endl;
-	system("pause");
-	system("cls");
-	goto Mulai;
 }
 
-void tambahantrian()
-{
+void buatstack(){
+	typeptr NS;
+
+ 	NS = NULL;
+ 	awalstack = NS;
+ 	akhirstack = awalstack;
+}
+
+int stackkosong(){
+	if(awalstack==NULL){
+		return true;
+	} else{
+		return false;
+	}
+}
+
+void tambahantrian(){
 	typeinfo antre;
 	int banyakantre;
 
 	qdepan = NULL;
 	keluarfile();
-	cout << "==============================\n";
+	cout << "\n==============================\n";
 	cout << "| Tambah Data Antrian Apotek |\n";
 	cout << "==============================\n";
 
-	cout << "\nBanyak antrian yang ingin diinput: "; cin >> banyakantre;
-	for (int i=0; i<banyakantre; i++)
-	{
-		antrian++;
-		cout << "\nAntrian ke-" << antrian << endl;
-		cout << "\tNama\t: "; cin.getline(antre.nama, 30); cin.getline(antre.nama, 30); fflush(stdin);
-		cout << "\tUmur\t: "; cin >> antre.umur; fflush(stdin);
-		cout << "\tObat\t: "; cin.getline(antre.obat, 100); fflush(stdin);
+	cout << "Nama\t: "; cin.getline(antre.nama, 30); cin.getline(antre.nama, 30); fflush(stdin);
+	cout << "Umur\t: "; cin >> antre.umur; fflush(stdin);
+	cout << "Obat\t: "; cin.getline(antre.obat, 100); fflush(stdin);
 
-		enqueue(antre);
-	}
+	enqueue(antre);
 	masukfile();
 }
 
-void lihatantrian()
-{
+void lihatantrian(){
 	qdepan = NULL;
 	keluarfile();
-	cout << "==============================\n";
+	cout << "\n==============================\n";
 	cout << "|       Daftar Antrian       |\n";
 	cout << "==============================\n";
 	cetakqueue();
 }
 
-void layaniantrian()
-{
+void layaniantrian(){
 	char layani;
 
-	qdepan = NULL; akhirstack = NULL; awalstack = NULL;
+	qdepan = NULL;
+	akhirstack = NULL;
+	awalstack = NULL;
 	keluarfile();
 	readstack();
-	cout << "==============================\n";
+	cout << "\n==============================\n";
 	cout << "|       Layani Antrian       |\n";
 	cout << "==============================\n";
 
-	if (queuekosong())
-	{
-		cout << "\nBelum ada antrian." << endl;
-	}
-	else
-	{
+	if (queuekosong()){
+		cout << "\nBelum ada antrian!\n";
+	} else{
 		cout << "\nNama : " << qdepan->info.nama << endl;
 		cout << "Umur : " << qdepan->info.umur << endl;
 		cout << "Obat : " << qdepan->info.obat << endl;
 
 		cout << "\nLayani antrian? (y/n): "; cin >> layani;
-		if (layani == 'y')
-		{
+		if (layani == 'y'){
 			dequeue();
-			cout << "\nAntrian dihapus." << endl;
-			cout << "Tersisa " << antrian << " antrian." << endl; 
-		}
-		else
-		{
-			cout << "\nAntrian belum dilayani." << endl;
+			cout << "\nAntrian dihapus!\n";
+			// cout << "Tersisa " << antrian << " antrian.\n";
+		} else{
+			cout << "\nAntrian belum dilayani!\n";
 		}
 	}
 	masukfile();
-	readstack();
-}
-
-void lihatriwayat()
-{
-	akhirstack = NULL; awalstack = NULL;
 	writestack();
-	cout << "==============================\n";
+}
+
+void lihatriwayat(){
+	akhirstack = NULL;
+	awalstack = NULL;
+	readstack();
+	cout << "\n==============================\n";
 	cout << "|       Riwayat Antrian      |\n";
-	cout << "==============================\n";
-	cetak_stack();
+	cout << "==============================\n\n";
+	cetakstack();
 }
 
-void buatqueue()
-{
-	qdepan=(node *) malloc(sizeof(node));
- 	qdepan=NULL;
- 	qbelakang=qdepan;
+void buatqueue(){
+	qdepan = (node *) malloc(sizeof(node));
+ 	qdepan = NULL;
+ 	qbelakang = qdepan;
 }
 
-int queuekosong()
-{
- 	if(qdepan==NULL)
+int queuekosong(){
+ 	if(qdepan==NULL){
 		return true;
- 	else
+ 	} else{
 		return false;
+ 	}
 }
 
-void enqueue(typeinfo IB)
-{
+void enqueue(typeinfo IB){
 	typeptr NB;
- 	NB=(node *) malloc(sizeof(node));
- 	NB->info=IB;
 
- 	if (qdepan==NULL)
- 		qdepan=NB;
- 	else
- 		qbelakang->next=NB;
+ 	NB = (node *) malloc(sizeof(node));
+ 	NB->info = IB;
 
- 	qbelakang=NB;
+ 	if (qdepan==NULL){
+ 		qdepan = NB;
+ 	} else{
+ 		qbelakang->next = NB;
+ 	}
+
+ 	qbelakang = NB;
  	qbelakang->next=NULL;
 }
 
-void dequeue()
-{
+void dequeue(){
  	typeptr hapus;
 
- 	if (queuekosong())
- 	{
- 		cout << "\nTidak ada antrian." << endl;
- 	}
- 	else
- 	{
- 		hapus=qdepan;
-		qdepan=hapus->next;
+ 	if (queuekosong()){
+ 		cout << "\nTidak ada antrian!\n";
+ 	} else{
+ 		hapus = qdepan;
+		qdepan = hapus->next;
 		push(hapus->info);
 		free(hapus);
-		antrian--;
-		riwayat++;
 	}
 }
 
-void cetakqueue()
-{
+void cetakqueue(){
  	typeptr bantu;
+ 	int x = 0;
 
-	if(queuekosong())
-	{
-		cout << "\nTidak ada antrian." << endl;
-	}
-	else
-	{
+	if(queuekosong()){
+		cout << "\nTidak ada antrian!\n";
+	} else{
 		bantu = qdepan;
-
-		for (int i=0; i<antrian; i++)
-		{
-			cout << "\nAntrian ke-" << i+1 << endl;
+		do{
+			++x;
+			cout << "\nAntrian ke-" << x << endl;
 			cout << "\tNama : " << bantu->info.nama << endl;
 			cout << "\tUmur : " << bantu->info.umur << endl;
 			cout << "\tObat : " << bantu->info.obat << endl;
 			bantu = bantu->next;
-		}
+		} while(bantu!=NULL);
 	}
 }
 
-void buat_stack()
-{
+void push(typeinfo IB){
 	typeptr NS;
- 	NS=NULL;
- 	awalstack=NS;
- 	akhirstack=awalstack;
- }
 
-int stack_kosong()
-{
- 	if(awalstack==NULL)
-		return true;
- 	else
-		return false;
+ 	NS = (node *) malloc(sizeof(node));
+ 	NS->info = IB;
+
+ 	if (awalstack==NULL){
+ 		awalstack = NS;
+ 	} else{
+ 		akhirstack->next = NS;
+ 	}
+
+ 	akhirstack = NS;
+ 	akhirstack->next = NULL;
 }
 
-void push(typeinfo IB)
-{
-	typeptr NS;
- 	NS=(node *) malloc(sizeof(node));
- 	NS->info=IB;
-
- 	if (awalstack==NULL)
- 		awalstack=NS;
- 	else
- 		akhirstack->next=NS;
-
- 	akhirstack=NS;
- 	akhirstack->next=NULL;
- 	riwayat++;
- }
-
-void pop()
-{
+void pop(){
 	typeptr hapus, bantu;
 
- 	if (stack_kosong())
- 	{
- 		cout << "\nTidak ada riwayat antrian." << endl;
-	}
-	else
- 	{
- 		bantu=awalstack;
-		hapus=akhirstack;
+ 	if (stackkosong()){
+ 		cout << "\nTidak ada riwayat antrian!\n";
+	} else{
+ 		bantu = awalstack;
+		hapus = akhirstack;
 
-		if (hapus==awalstack)
-			awalstack=NULL;
-		else
-		{
-			while(bantu->next->next!=NULL)
+		if (hapus==awalstack){
+			awalstack = NULL;
+		} else{
+			while(bantu->next->next!=NULL){
  				bantu=bantu->next;
-
-			akhirstack=bantu;
-			akhirstack->next=NULL;
+				akhirstack = bantu;
+				akhirstack->next = NULL;
+			}
 		}
 		free(hapus);
-		riwayat--;
 	}
 }
 
-void cetak_stack()
-{
-	typeptr depan,bantu;
+void cetakstack(){
+	typeptr depan, bantu;
 	char hapus;
+	int riwayat = 0;
 
- 	if (stack_kosong())
- 	{
- 		cout << "\nTidak ada riwayat antrian." << endl;
- 	}
- 	else
- 	{
+ 	if (stackkosong()){
+ 		cout << "\nTidak ada riwayat antrian!\n";
+ 	} else{
  		depan = akhirstack;
-		do
-		{
-			if(depan!=awalstack)
-			{
-
-				cout << "Nama : " << depan->info.nama << endl;
-				cout << "NIK  : " << depan->info.umur << endl;
-				cout << "Umur : " << depan->info.obat << endl;
+		do{
+			++riwayat;
+			cout << "Data riwayat " << riwayat;
+			if(depan!=awalstack){
+				cout << "\n\tNama\t: " << depan->info.nama << endl;
+				cout << "\tUmur\t: " << depan->info.umur << endl;
+				cout << "\tObat\t: " << depan->info.obat << endl;
 				bantu = awalstack;
 				while(bantu->next!=depan){
 					bantu=bantu->next;
 				}
 				depan = bantu;
-			}
-			else
-			{
-
-				cout << "Nama : " << depan->info.nama << endl;
-				cout << "NIK  : " << depan->info.umur << endl;
-				cout << "Umur : " << depan->info.obat << endl;
+			} else{
+				cout << "\n\tNama\t: " << depan->info.nama << endl;
+				cout << "\tUmur\t: " << depan->info.umur << endl;
+				cout << "\tObat\t: " << depan->info.obat << endl;
 				break;
 			}
 			cout << endl;
-		}while(depan!= NULL);
-
-		cout << "\nHapus riwayat antrian? (y/n): "; cin >> hapus;
-
-		if (hapus == 'y')
-		{
-			for (int i=0; i<riwayat; i++)
-			{
-				pop(); //MENGHAPUS SEBANYAK JUMLAH RIWAYAT YANG ADA
-			}
-			cout << riwayat << " riwayat antrian berhasil dihapus." << endl;
-		}
-		else
-		{
-			cout << "Kembali ke menu." << endl;
-		}
+		} while(depan!= NULL);
  	}
 }
 
-void masukfile()
-{
+void masukfile(){
 	ofstream myfile;
 	typeinfo antre;
 
@@ -378,68 +327,64 @@ void masukfile()
 	myfile.close();
 }
 
-void keluarfile()
-{
+void keluarfile(){
 	ifstream myfile("1_DaftarAntrian.txt");
 	typeinfo antre;
 
 	if(myfile.is_open()){
-		myfile >> strcpy(antre.nama, stringreverse(antre.nama).c_str()) >> antre.umur >> antre.obat;
+		myfile >> strcpy(antre.nama, stringreverse(antre.nama).c_str()) >> antre.umur >> strcpy(antre.obat, stringreverse(antre.obat).c_str());
 
 		while(myfile.eof()==0){
-			strcpy(antre.nama,stringreverse(antre.nama).c_str());
+			strcpy(antre.nama, stringreverse(antre.nama).c_str());
 			enqueue(antre);
-			myfile >> strcpy(antre.nama,stringreverse(antre.nama).c_str()) >> antre.umur >> antre.obat;
+			myfile >> strcpy(antre.nama, stringreverse(antre.nama).c_str()) >> antre.umur >> strcpy(antre.obat, stringreverse(antre.obat).c_str());
 		}
 		myfile.close();
 	}
 }
 
-void writestack()
-{
+void writestack(){
 	ofstream myfile;
 	typeinfo antre;
 
 	myfile.open("2_RiwayatAntrian.txt");
 	string ubah;
-	typeptr bantu,cetak;
+	typeptr bantu, cetak;
 	cetak = akhirstack;
 	do{
 		antre = cetak->info;
 		if(cetak!=awalstack){
-			myfile << strcpy(antre.nama, stringreplace(antre.nama).c_str()) << "\n" << antre.umur << "\n" << antre.obat << "\n";
+			myfile << strcpy(antre.nama, stringreplace(antre.nama).c_str()) << "\n" << antre.umur << "\n" << strcpy(antre.obat, stringreplace(antre.obat).c_str()) << "\n";
 			bantu = awalstack;
 			while(bantu->next!=cetak){
 				bantu=bantu->next;
 			}
 			cetak = bantu;
 		} else{
-			myfile << strcpy(antre.nama, stringreplace(antre.nama).c_str()) << "\n" << antre.umur << "\n" << antre.obat << "\n";
+			myfile << strcpy(antre.nama, stringreplace(antre.nama).c_str()) << "\n" << antre.umur << "\n" << strcpy(antre.obat, stringreplace(antre.obat).c_str()) << "\n";
 			break;
 		}
 	} while(cetak!= NULL);
 	myfile.close();
 }
 
-void readstack()
-{
+void readstack(){
 	ifstream myfile("2_RiwayatAntrian.txt");
 	typeinfo antre;
 
 	if(myfile.is_open()){
-		myfile >> strcpy(antre.nama, stringreverse(antre.nama).c_str()) >> antre.umur >> antre.obat;
+		myfile >> strcpy(antre.nama, stringreverse(antre.nama).c_str()) >> antre.umur >> strcpy(antre.obat, stringreplace(antre.obat).c_str());
 
 		while(myfile.eof()==0){
-			strcpy(antre.nama,stringreverse(antre.nama).c_str());
+			strcpy(antre.nama, stringreverse(antre.nama).c_str());
 			push(antre);
-			myfile >> strcpy(antre.nama,stringreverse(antre.nama).c_str()) >> antre.umur >> antre.obat;
+			myfile >> strcpy(antre.nama, stringreverse(antre.nama).c_str()) >> antre.umur >> strcpy(antre.obat, stringreplace(antre.obat).c_str());
 		}
 		myfile.close();
 	}
 }
 
-string stringreplace(string x)
-{
+string stringreplace(string x){
 	for (int i = 0; x[i]; i++){
 		if(x[i]==' '){
 			x.replace(i,1,1,'_');
@@ -448,8 +393,7 @@ string stringreplace(string x)
 	return x;
 }
 
-string stringreverse(string x)
-{
+string stringreverse(string x){
 	for (int i = 0; x[i]; i++){
 		if(x[i]=='_'){
 			x.replace(i,1,1,' ');
