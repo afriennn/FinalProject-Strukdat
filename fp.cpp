@@ -3,8 +3,6 @@
 #include <conio.h>
 #include <string.h>
 #include <fstream>
-#define True 1
-#define False 0
 using namespace std;
 
 struct typeinfo{
@@ -100,6 +98,7 @@ void tambahantrian()
 	typeinfo antre;
 	int banyakantre;
 
+	qdepan = NULL;
 	keluarfile();
 	cout << "==============================\n";
 	cout << "| Tambah Data Antrian Apotek |\n";
@@ -121,6 +120,7 @@ void tambahantrian()
 
 void lihatantrian()
 {
+	qdepan = NULL;
 	keluarfile();
 	cout << "==============================\n";
 	cout << "|       Daftar Antrian       |\n";
@@ -132,6 +132,7 @@ void layaniantrian()
 {
 	char layani;
 
+	qdepan = NULL; akhirstack = NULL; awalstack = NULL;
 	keluarfile();
 	readstack();
 	cout << "==============================\n";
@@ -153,6 +154,7 @@ void layaniantrian()
 		{
 			dequeue();
 			cout << "\nAntrian dihapus." << endl;
+			cout << "Tersisa " << antrian << " antrian." << endl; 
 		}
 		else
 		{
@@ -165,6 +167,7 @@ void layaniantrian()
 
 void lihatriwayat()
 {
+	akhirstack = NULL; awalstack = NULL;
 	writestack();
 	cout << "==============================\n";
 	cout << "|       Riwayat Antrian      |\n";
@@ -182,9 +185,9 @@ void buatqueue()
 int queuekosong()
 {
  	if(qdepan==NULL)
-		return(True);
+		return true;
  	else
-		return(False);
+		return false;
 }
 
 void enqueue(typeinfo IB)
@@ -255,9 +258,9 @@ void buat_stack()
 int stack_kosong()
 {
  	if(awalstack==NULL)
-		return(True);
+		return true;
  	else
-		return(False);
+		return false;
 }
 
 void push(typeinfo IB)
@@ -362,10 +365,10 @@ void masukfile()
 {
 	ofstream myfile;
 	typeinfo antre;
-	string ubah;
-	typeptr bantu;
 
 	myfile.open("1_DaftarAntrian.txt");
+	string ubah;
+	typeptr bantu;
 	bantu = qdepan;
 	while(bantu!=NULL){
 		antre = bantu->info;
@@ -377,8 +380,8 @@ void masukfile()
 
 void keluarfile()
 {
-	typeinfo antre;
 	ifstream myfile("1_DaftarAntrian.txt");
+	typeinfo antre;
 
 	if(myfile.is_open()){
 		myfile >> strcpy(antre.nama, stringreverse(antre.nama).c_str()) >> antre.umur >> antre.obat;
@@ -396,10 +399,10 @@ void writestack()
 {
 	ofstream myfile;
 	typeinfo antre;
-	string ubah;
-	typeptr bantu,cetak;
 
 	myfile.open("2_RiwayatAntrian.txt");
+	string ubah;
+	typeptr bantu,cetak;
 	cetak = akhirstack;
 	do{
 		antre = cetak->info;
@@ -420,8 +423,8 @@ void writestack()
 
 void readstack()
 {
-	typeinfo antre;
 	ifstream myfile("2_RiwayatAntrian.txt");
+	typeinfo antre;
 
 	if(myfile.is_open()){
 		myfile >> strcpy(antre.nama, stringreverse(antre.nama).c_str()) >> antre.umur >> antre.obat;
@@ -454,53 +457,3 @@ string stringreverse(string x)
 	}
 	return x;
 }
-
-/*void cetak_stack()
-{
-	typeptr depan,bantu;
-	char hapus;
-
- 	if (stack_kosong())
- 	{
- 		cout << "\nTidak ada riwayat antrian." << endl;
- 	}
- 	else
- 	{
- 		depan=awalstack;
- 		awalstack=akhirstack;
- 		do
-	 	{
-	 		bantu=depan;
-			while (bantu->next!=akhirstack)
-	 			bantu=bantu->next;
-			akhirstack->next=bantu;
-			akhirstack=bantu;
-		}
-		while (akhirstack!=depan);
-
-	 	akhirstack->next=NULL;
-	 	bantu=awalstack;
-	 	while(bantu!=NULL)
-	 	{
-			cout << "\nNama : " << bantu->info.nama << endl;
-			cout << "\nUmur : " << bantu->info.umur << endl;
-			cout << "\nObat : " << bantu->info.obat << endl;
-			bantu=bantu->next;
-		}
-
-		cout << "Hapus riwayat antrian? (y/n): "; cin >> hapus;
-
-		if (hapus == 'y')
-		{
-			for (int i=0; i<riwayat; i++)
-			{
-				pop(); //MENGHAPUS SEBANYAK JUMLAH RIWAYAT YANG ADA
-			}
-			cout << riwayat << " riwayat antrian berhasil dihapus." << endl;
-		}
-		else
-		{
-			cout << "Kembali ke menu." << endl;
-		}
- 	}
-}*/
